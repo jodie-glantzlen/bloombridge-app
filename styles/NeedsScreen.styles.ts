@@ -34,4 +34,8 @@ export default StyleSheet.create({
 		color: '#fff',
 		fontWeight: 'bold',
 	},
+	submitContainer: {
+		justifyContent: 'center',
+		alignItems: 'center',
+	}
 });

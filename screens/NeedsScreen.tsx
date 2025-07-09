@@ -33,6 +33,10 @@ export default function NeedsScreen() {
 		return selectedNeeds.includes(id)
 	}
 
+	const handleSubmit = () => {
+		console.log('payload: ', selectedNeeds)
+	}
+
 	return (
 		<>
 			<View style={styles.titleContainer}>
@@ -58,6 +62,16 @@ export default function NeedsScreen() {
 						</Text>
 					</TouchableOpacity>
 				))}
+			</View>
+			<View>
+				<TouchableOpacity
+					style={styles.submitContainer}
+					onPress={handleSubmit}
+				>
+					<Text>
+						Submit
+					</Text>
+				</TouchableOpacity>
 			</View>
 		</>
 	)
