@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 import fetchPredefinedNeeds from '../lib/api';
 import { PredefinedNeed } from '../types';
 import styles from '../styles/NeedsScreen.styles'
@@ -37,31 +37,42 @@ export default function NeedsScreen() {
 		console.log('payload: ', selectedNeeds)
 	}
 
+	const renderNeedItem = ({ item }: { item: PredefinedNeed }) => {
+		return (
+			<TouchableOpacity
+				style={[
+					styles.button,
+					isSelected(item.id) && styles.buttonSelected,
+				]}
+				onPress={() => toggleSelection(item.id)}
+			>
+				<Text
+					style={[
+						styles.buttonText,
+						isSelected(item.id) && styles.buttonTextSelected
+					]}
+				>
+					{item.label}
+				</Text>
+			</TouchableOpacity>
+		)
+	}
+
 	return (
-		<>
+		<View style={{ flex: 1 }}>
 			<View style={styles.titleContainer}>
 				<Text style={styles.title}>What do you need help with?</Text>
 			</View>
 			<View style={styles.container}>
-				{needs.map((need) => (
-					<TouchableOpacity
-						key={need.id}
-						style={[
-							styles.button,
-							isSelected(need.id) && styles.buttonSelected,
-						]}
-						onPress={() => toggleSelection(need.id)}
-					>
-						<Text
-							style={[
-								styles.buttonText,
-								isSelected(need.id) && styles.buttonTextSelected
-							]}
-						>
-							{need.label}
-						</Text>
-					</TouchableOpacity>
-				))}
+				<FlatList
+					data={needs}
+					keyExtractor={(item) => item.id.toString()}
+					renderItem={renderNeedItem}
+					numColumns={2}
+					contentContainerStyle={styles.container}
+					style={{ flex: 1 }}
+				>
+				</FlatList>
 			</View>
 			<View>
 				<TouchableOpacity
@@ -73,6 +84,6 @@ export default function NeedsScreen() {
 					</Text>
 				</TouchableOpacity>
 			</View>
-		</>
+		</View>
 	)
 }
