@@ -1,12 +1,11 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
-import { PredefinedNeed } from '../types';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import fetchPredefinedNeeds from '../lib/api';
-import { View, Text, StyleSheet } from 'react-native';
-import { FlatList } from 'react-native-gesture-handler';
+import { PredefinedNeed } from '../types';
 
 export default function NeedsScreen() {
 	const [needs, setNeeds] = useState<PredefinedNeed[]>([]);
+	const [selectedNeeds, setSelectedNeeds] = useState<number[]>([])
 
 	useEffect(() => {
 		const loadNeeds = async () => {
@@ -21,41 +20,80 @@ export default function NeedsScreen() {
 		loadNeeds()
 	}, [])
 
+	const toggleSelection = (id: number) => {
+		// prev is the CURRENT state
+		setSelectedNeeds((prev) =>
+			// for each need, return the one that is not the current id
+			prev.includes(id) ? prev.filter((n) => n !== id) : [...prev, id]
+		)
+	}
+
+	const isSelected = (id: number): boolean => {
+		return selectedNeeds.includes(id)
+	}
+
 	return (
-		<View style={styles.container}>
-			<Text style={styles.title}>What do you need help with?</Text>
-			<Text style={styles.description}>
-				Needs selection coming soon my friend
-			</Text>
-			<FlatList
-				data={needs}
-				keyExtractor={item => item.id.toString()}
-				renderItem={({ item }) => (
-					<View>
-						<Text>{item.label}</Text>
-					</View>
-				)}
-			/>
-		</View>
+		<>
+			<View style={styles.titleContainer}>
+				<Text style={styles.title}>What do you need help with?</Text>
+			</View>
+			<View style={styles.container}>
+				{needs.map((need) => (
+					<TouchableOpacity
+						key={need.id}
+						style={[
+							styles.button,
+							isSelected(need.id) && styles.buttonSelected,
+						]}
+						onPress={() => toggleSelection(need.id)}
+					>
+						<Text
+							style={[
+								styles.buttonText,
+								isSelected(need.id) && styles.buttonTextSelected
+							]}
+						>
+							{need.label}
+						</Text>
+					</TouchableOpacity>
+				))}
+			</View>
+		</>
 	)
 }
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
+		flexWrap: 'wrap',
+		flexDirection: 'row',
+		gap: 8,
+		padding: 16,
+	},
+	titleContainer: {
 		justifyContent: 'center',
 		alignItems: 'center',
-		backgroundColor: '#f0f0f0',
 	},
 	title: {
 		fontSize: 24,
 		fontWeight: 'bold',
 		marginBottom: 10,
 	},
-	description: {
-		fontSize: 16,
-		color: '#555',
-		textAlign: 'center',
-		paddingHorizontal: 20,
+	button: {
+		backgroundColor: '#eee',
+		paddingVertical: 10,
+		paddingHorizontal: 16,
+		borderRadius: 20,
+		marginRight: 8,
+		marginBottom: 8,
+	},
+	buttonSelected: {
+		backgroundColor: '#007AFF',
+	},
+	buttonText: {
+		color: '#333',
+	},
+	buttonTextSelected: {
+		color: '#fff',
+		fontWeight: 'bold',
 	},
 });
