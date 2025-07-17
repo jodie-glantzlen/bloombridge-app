@@ -1,9 +1,9 @@
-import React, {useState} from "react";
+import { API_BASE_URL } from "../constants/constants";
 import { useRouter } from "expo-router";
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
-import styles from '../styles/SignUpScreen.styles'
-import * as SecureStore from 'expo-secure-store';
-import { API_URL } from '../app/constants';
+import React, { useState } from "react";
+import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import styles from '../styles/SignUpScreen.styles';
+import { StorageService } from "../services/storage";
 
 export default function SignUpScreen() {
 	const [name, setName] = useState('');
@@ -11,15 +11,16 @@ export default function SignUpScreen() {
 
 	const handleSignUp = async () => {
 		try {
-			const response = await fetch(`${API_URL}/api/users`, {
+			const response = await fetch(`${API_BASE_URL}/api/users`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({name})
 			})
 			const user = await response.json();
-			await SecureStore.setItemAsync('userId', user.id.toString());
+			console.log("user", user)
+			await StorageService.setItem('userId', user.id.toString());
 
-			// navigate to needs page, passing userIdd for the needs endpoint
+			// navigate to needs page, passing userId for the needs endpoint
 			router.push({
 				pathname: '/tabs/needs',
 				params: {userId: user.id}
@@ -43,3 +44,6 @@ export default function SignUpScreen() {
 		</View>
 	)
 }
+
+// TODO
+	// persist users accross all devices...

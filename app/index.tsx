@@ -1,17 +1,24 @@
 import { Redirect, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import * as SecureStore from 'expo-secure-store';
 import { View, ActivityIndicator } from "react-native";
-
+import { StorageService } from "../services/storage";
 
 export default function Index() {
 	const [loading, setLoading] = useState(true)
   const router = useRouter();
 
+	// useEffect(() => {
+  //   const clearStorage = async () => {
+  //     await StorageService.removeItem('userId');
+  //     console.log('Cleared userId from storage');
+  //   };
+  //   clearStorage();
+  // }, []);
+
 	useEffect(() => {
 		const checkUser = async () => {
 			try {
-				const userId = await SecureStore.getItemAsync('userId')
+				const userId = await StorageService.getItem('userId')
 
 			if (userId) {
 				router.replace('/tabs/needs');

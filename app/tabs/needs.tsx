@@ -1,2 +1,2 @@
-import NeedsScreen from "@/screens/NeedsScreen";
+import NeedsScreen from "../../screens/NeedsScreen";
 export default NeedsScreen;
